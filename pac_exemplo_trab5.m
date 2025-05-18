@@ -41,7 +41,7 @@ function aperta_botao(jogo, botao, duracao)
     jogo.set_button_mask(zeros(1, 9));
 end
 
-function avanca_tela(jogo, frames, desenha)
+function tela = avanca_tela(jogo, frames, desenha)
     for i = 1 : frames
         tela = captura_tela(jogo);
         if strcmp(desenha, "sim")
@@ -53,7 +53,8 @@ function avanca_tela(jogo, frames, desenha)
     jogo.get_state();
 end
 
-function detecta_personagem(jogo)
+function robo = atracao(robo, alvo, K)
+    robo = robo + K * (alvo - robo);
 end
 
 % Inicia o emulador
@@ -90,26 +91,37 @@ if ~exist('jogo')
     % state_game = jogo.get_state();
 
     % Espera a intro do jogo passar
-    avanca_tela(jogo, 270, "não");
+    tela = avanca_tela(jogo, 270, "não");
 
     % Para entrar no jogo
     aperta_botao(jogo, Start, 10);
 
     % Avança a tela????
-    avanca_tela(jogo, 10, "sim");
+    tela = avanca_tela(jogo, 10, "sim");
 
     % Inicia o jogo
     aperta_botao(jogo, Start, 10);
 
     % Estamos no jogo
-    avanca_tela(jogo, 550, "não");
+    tela = avanca_tela(jogo, 550, "não");
+    tela_gray = rgb2gray(tela);
 
-    detecta_personagem(jogo); 
+    u = unique(tela_gray)
+
+    Bub = tela_gray == u(3) | tela_gray == u(4) | tela_gray == u(9);
+    Ini = tela_gray == u(2) | tela_gray == u(5) | tela_gray == u(7);
+    imshow(Bub | Ini);
+    drawnow
+    pause(10)
+
     % Aqui tudo vai ser feito
-    aperta_botao(jogo, A_btn, 5);
-
-    % Acho que a partir daqui pode começar o programa mesmo
-    avanca_tela(jogo, 50, "sim");
+    % while true
+    %     
+    % end
+    % aperta_botao(jogo, A_btn, 5);
+    %
+    % % Acho que a partir daqui pode começar o programa mesmo
+    % avanca_tela(jogo, 50, "sim");
 end
 
 %

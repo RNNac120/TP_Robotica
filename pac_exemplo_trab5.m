@@ -15,7 +15,7 @@ Up     = [0 0 0 0 1 0 0 0 0];
 Down   = [0 0 0 0 0 1 0 0 0];
 Left   = [0 0 0 0 0 0 1 0 0];
 Right  = [0 0 0 0 0 0 0 1 0];
-B_tn   = [0 0 0 0 0 0 0 0 1]; % Pulo
+B_btn  = [0 0 0 0 0 0 0 0 1]; % Pulo
 
 % Função para capturar a tela do jogo
 function [tela] = captura_tela(jogo)
@@ -104,15 +104,28 @@ if ~exist('jogo')
 
     % Estamos no jogo
     tela = avanca_tela(jogo, 550, "não");
-    tela_gray = rgb2gray(tela);
 
-    u = unique(tela_gray)
+    aperta_botao(jogo, Right, 100);
+    aperta_botao(jogo, Left, 1);
 
-    Bub = tela_gray == u(3) | tela_gray == u(4) | tela_gray == u(9);
-    Ini = tela_gray == u(2) | tela_gray == u(5) | tela_gray == u(7);
-    imshow(Bub | Ini);
-    drawnow
-    pause(10)
+
+    for i = 1 : 1000
+        tela_gray = rgb2gray(tela);
+        u = unique(tela_gray);
+        % Os personagens
+        Bub = tela_gray == u(3) | tela_gray == u(4) | tela_gray == u(9);
+        Ini = tela_gray == u(2) | tela_gray == u(5) | tela_gray == u(7);
+        distancia = norm(Bub - Ini);
+        fprintf("Distancia: %f\n", distancia);
+        if distancia > 20.0
+            fprintf("Muito perto!\n");
+            % Se estiver muito perto, aperta o botão de ataque
+            aperta_botao(jogo, A_btn, 1);
+            aperta_botao(jogo, A_btn, 1);
+            aperta_botao(jogo, A_btn, 1);
+        end
+        tela = avanca_tela(jogo, 1, "sim");
+    end
 
     % Aqui tudo vai ser feito
     % while true
